@@ -1,0 +1,11 @@
+flowchart LR
+  UI[User UI (index.html)] -->|PUT CSV| S3[S3 uploads bucket]
+  UI -->|GET presign| PresignLambda[Presign Lambda]
+  PresignLambda --> S3
+  S3 -->|ObjectCreated| CsvLambda[CSV Processor Lambda]
+  CsvLambda -->|Insert| RDS[(RDS Postgres)]
+  CsvLambda -->|POST webhook| n8n[ n8n (self-hosted) ]
+  n8n -->|Reads products| RDS
+  n8n -->|Writes matches| RDS
+  n8n -->|Sends email| SES[AWS SES]
+  Crawler[n8n crawler] --> RDS

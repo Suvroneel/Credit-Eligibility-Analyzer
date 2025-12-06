@@ -1,0 +1,16 @@
+ # Python
+__pycache__/
+*.pyc
+.env
+.env.local
+
+# Node / n8n
+node_modules/
+n8n_data/
+
+# OS
+.DS_Store
+
+# Docker
+docker-compose.override.yml
+

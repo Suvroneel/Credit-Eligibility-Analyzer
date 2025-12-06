@@ -1,0 +1,63 @@
+service: loan-eligibility-engine
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: ${env:AWS_REGION, 'us-east-1'}
+  environment:
+    S3_BUCKET: ${env:S3_BUCKET}
+    N8N_WEBHOOK_BASE_URL: ${env:N8N_WEBHOOK_BASE_URL}
+    N8N_WEBHOOK_KEY: ${env:N8N_WEBHOOK_KEY}
+    RDS_HOST: ${env:RDS_HOST}
+    RDS_PORT: ${env:RDS_PORT}
+    RDS_DB: ${env:RDS_DB}
+    RDS_USER: ${env:RDS_USER}
+    RDS_PASSWORD: ${env:RDS_PASSWORD}
+
+functions:
+  presign:
+    handler: lambdas.presign_url_generator.handler.handler
+    events:
+      - httpApi:
+          path: /presign
+          method: get
+    timeout: 10
+
+  csvProcessor:
+    handler: lambdas.csv_ingest.handler.handler
+    # S3 event trigger created below in resources
+    timeout: 120
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    zip: true
+    slim: true
+
+resources:
+  Resources:
+    UserUploadsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${env:S3_BUCKET}
+        NotificationConfiguration:
+          LambdaConfigurations:
+            - Event: "s3:ObjectCreated:Put"
+              Function: !GetAtt CsvProcessorLambda.Arn
+
+    # Wrap Lambda into CloudFormation so we can add S3 permission
+    CsvProcessorLambda:
+      Type: AWS::Lambda::Function
+      # NOTE: Serverless will create the actual Lambda; this placeholder is to attach notifications.
+      Properties: {}
+
+  # Permission to allow S3 to invoke the csvProcessor Lambda
+  Outputs:
+    S3BucketName:
+      Value: !Ref UserUploadsBucket
+
+# Extra: IAM role statements to allow Lambdas to access S3 and Secrets/SSM
+# Serverless will auto-generate policies; you can add specific policies if needed.
