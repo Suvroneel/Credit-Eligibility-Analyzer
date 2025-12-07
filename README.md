@@ -4,7 +4,8 @@ This repository contains my submission for the **SDE Intern (Backend)** assignme
 It showcases a backend pipeline that ingests user CSVs, discovers relevant loan products, 
 matches users to eligible loans based on rules, and triggers notifications.
 
-The solution is implemented using AWS services, n8n automations, Docker, and a structured SQL schema.
+The solution is implemented using n8n automations, Docker, Python, and a structured SQL schema.  
+AWS services are prepared for deployment but are optional for local testing.
 
 ---
 
