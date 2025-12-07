@@ -1,0 +1,154 @@
+{
+  "name": "user_loan_workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -512,
+        0
+      ],
+      "id": "3bf60a6c-245e-4977-af59-1f0651b67c47",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "options": {
+          "delimiter": ","
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "1f0b1ee5-14ed-461b-a88e-0e679c3918e6",
+      "name": "Extract from File",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor item in _input.all():\n  item.json.myNewField = 1\nreturn _input.all()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        0
+      ],
+      "id": "169ddc85-e7ba-4978-971e-117b69f26bd3",
+      "name": "Code in Python (Beta)",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        352,
+        0
+      ],
+      "id": "e5153ac3-d5ee-4032-af51-ae9421f6dd1a",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "y7cDJHsx8ryqBy5a",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fileSelector": "D:\\internshala comp\\Suvroneel Nathak The Loan Eligibility Engine\\n8n\\n8n_data\\users.csv",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        0
+      ],
+      "id": "1a9cfdff-da1e-4fcd-8f87-40ebdbf611a0",
+      "name": "Read/Write Files from Disk",
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code in Python (Beta)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "76b06f4c-1e19-40d4-8677-1a3d0c512558",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "223aad9da6c04308d3f6d384ba346c0d1ee7d5173ea1a01c1d0ff257968801a4"
+  },
+  "id": "VfkPH4nMfhDFLsY6",
+  "tags": []
+}
