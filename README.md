@@ -22,7 +22,7 @@ The solution is implemented using AWS services, n8n automations, Docker, and a s
 
 ## 🏗️ Architecture Diagram
 
-![Architecture Diagram](docs/Architecture .jpg)
+![Architecture Diagram](docs/Architecture.jpg)
 
 ---
 
