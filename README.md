@@ -1,4 +1,4 @@
-# Suvroneel Nathak — The Loan Eligibility Engine
+# CreditEligibility Analyzer
 
 This project a backend pipeline that ingests user CSVs, discovers relevant loan products, 
 matches users to eligible loans based on rules, and triggers notifications.
